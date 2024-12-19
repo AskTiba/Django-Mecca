@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseRedirect
+from django.urls import reverse
 
 # List of houses from Game of Thrones
 houses = [
@@ -80,6 +81,7 @@ houses = [
 
 # Create your views here.
 def home(request):
+    # print(reverse('home', args = ['simar']))
     html = ''
     for house in houses:
         html += f'''
@@ -92,7 +94,8 @@ def home(request):
                
             </div>
 '''
-    return HttpResponse(html)
+    # return HttpResponse(html)
+    return render(request, 'posts/home.html')
 
 
 def house(request,id):
@@ -111,3 +114,8 @@ def house(request,id):
         return HttpResponse(html)
     else:
         return HttpResponseNotFound('House not available')
+    
+    
+def google(request,id):
+    url = reverse('house', args = [id])
+    return HttpResponseRedirect(url) 
