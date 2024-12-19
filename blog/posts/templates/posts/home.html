@@ -8,9 +8,23 @@
   </head>
 
   <body>
-    <div class="m-1">
-      <h1 class="text-5xl text-green-700 font-medium">Welcome Home</h1>
-      <p class="text-2xl">Our blades are sharp</p>
+    <div class="flex flex-col m-1 items-center justify-center">
+      <h1 class="text-5xl text-green-700 font-medium">Game Of Thrones</h1>
+      <p class="">When you play the Game of Thrones, you either win or die</p>
+    </div>
+    <div class="m-3">
+      <div>
+        {% for character in characters %}
+        <h3 class="">
+          <a href="{{ character.id }}/">
+            <h1 class="text-red-600">
+              {{character.id|add:"1"}}.{{ character.fullName }}
+              ({{character.family }})
+            </h1>
+          </a>
+        </h3>
+        {% endfor %}
+      </div>
     </div>
   </body>
 </html>

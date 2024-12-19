@@ -1,0 +1,24 @@
+{% extends 'posts/base.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ character.fullName }}</title>
+  </head>
+  <body>
+    <div class="p-4">
+      <h1 class="font-bold text-indigo-950">{{ character.fullName }}</h1>
+      <p><strong>Family:</strong> {{ character.family }}</p>
+      <p><strong>Title:</strong> {{ character.title }}</p>
+      <img
+        src="{{ character.imageUrl }}"
+        alt="{{ character.fullName }}"
+        class="rounded-lg my-3 aspect-square"
+        style="max-width: 300px"
+      />
+      <a href="/posts/" class="text-blue-800 font-semibold"
+        >Back to all characters</a
+      >
+    </div>
+  </body>
+</html>
+{% endblock %}
