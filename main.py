@@ -1,17 +1,16 @@
 import asyncio
 import csv
 import random
+import os
 from datetime import datetime
 from httpx import ConnectTimeout, Timeout, HTTPStatusError
 from twikit import Client
 
 # Constants
-QUERY = "chatgpt"  # Replace with your search query
-MIN_TWEETS = 100  # Minimum number of tweets to fetch
+QUERY = "from:JadeMwesigwa since:2024-01-01 until:2024-12-20"
 COOKIE_FILE = 'cookies.json'
 OUTPUT_FILE = 'tweets.csv'
 MAX_RETRIES = 5  # Maximum retry attempts for timeouts
-
 
 async def fetch_tweets_with_retry(client, query, retries=MAX_RETRIES):
     """
@@ -19,6 +18,7 @@ async def fetch_tweets_with_retry(client, query, retries=MAX_RETRIES):
     """
     for attempt in range(retries):
         try:
+            print(f"Fetching tweets for query: '{query}'...")
             return await client.search_tweet(query, product='Top')
         except ConnectTimeout:
             if attempt < retries - 1:
@@ -34,68 +34,104 @@ async def fetch_tweets_with_retry(client, query, retries=MAX_RETRIES):
                 print(f"Rate limited. Retrying in {wait_time} seconds...")
                 await asyncio.sleep(wait_time)
             else:
+                print(f"HTTP error occurred: {e.response.status_code} - {e.response.text}")
                 raise
 
+async def login_and_save_cookies(client):
+    """
+    Handle login and save cookies to a file for future authentication.
+    """
+    print("Logging in to fetch authentication cookies...")
+    await client.login(username="your_username", password="your_password")  # Replace with your credentials
+    print("Login successful. Saving cookies to 'cookies.json'.")
+    client.save_cookies(COOKIE_FILE)
+    print(f"Cookies saved to {COOKIE_FILE}.")
+
+async def fetch_all_tweets(client, query):
+    """
+    Fetch all tweets for the given query with pagination and sorting.
+    """
+    all_tweets = []
+    tweet_count = 0
+    date_format = "%a %b %d %H:%M:%S %z %Y"  # Matches Twitter's created_at format
+
+    # Initial fetch
+    tweets = await fetch_tweets_with_retry(client, query)
+    if not tweets:
+        print("No tweets found for the given query.")
+        return all_tweets
+
+    while tweets:
+        print(f"Fetched {len(tweets)} tweets in this batch.")
+        for tweet in tweets:
+            tweet_count += 1
+            tweet_data = [
+                tweet_count,
+                tweet.user.name,
+                tweet.text,
+                tweet.created_at,
+                tweet.retweet_count,
+                tweet.favorite_count,
+            ]
+            all_tweets.append(tweet_data)
+
+        # Attempt to fetch the next batch
+        try:
+            print("Pagination: Fetching next batch...")
+            tweets = await tweets.next()
+        except AttributeError:
+            print("No more tweets available in pagination.")
+            break
+        except Exception as e:
+            print(f"Error during pagination: {e}")
+            break
+
+    print(f"Total tweets fetched: {len(all_tweets)}")
+    return all_tweets
+
+async def save_tweets_to_csv(tweets, output_file):
+    """
+    Save tweets to a CSV file.
+    """
+    tweets.sort(key=lambda tweet: datetime.strptime(tweet[3], "%a %b %d %H:%M:%S %z %Y"), reverse=True)
+
+    with open(output_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Tweet Count', 'Username', 'Text', 'Created_at', 'Retweets', 'Likes'])
+        writer.writerows(tweets)
+
+    print(f"Tweets saved to {output_file}.")
 
 async def main():
     """
     Main function to fetch tweets and save them to a CSV file.
     """
-    # Initialize the client with a higher timeout
     client = Client(language='en-US', timeout=Timeout(30))
-    client.load_cookies(COOKIE_FILE)
-    print("Login successful and cookies loaded.")
 
-    tweet_count = 0
-    all_tweets = []
+    # Check for cookies and authenticate
+    if os.path.exists(COOKIE_FILE):
+        print("Loading cookies for authentication...")
+        client.load_cookies(COOKIE_FILE)
+        print("Cookies loaded successfully.")
+    else:
+        await login_and_save_cookies(client)
 
     try:
-        print(f'{datetime.now()} - Fetching tweets...')
-        tweets = await fetch_tweets_with_retry(client, QUERY)
+        print(f"Fetching tweets for query: \"{QUERY}\"...")
+        all_tweets = await fetch_all_tweets(client, QUERY)
 
-        while tweet_count < MIN_TWEETS:
-            if not tweets:
-                print(f'{datetime.now()} - No more tweets found.')
-                break
-
-            for tweet in tweets:
-                tweet_count += 1
-                tweet_data = [
-                    tweet_count,
-                    tweet.user.name,
-                    tweet.text,
-                    tweet.created_at,
-                    tweet.retweet_count,
-                    tweet.favorite_count,
-                ]
-                all_tweets.append(tweet_data)
-
-                if tweet_count >= MIN_TWEETS:
-                    break
-
-            # Random delay between requests to avoid rate limits
-            await asyncio.sleep(random.uniform(5, 15))
-            tweets = await tweets.next()
-
-        # Save tweets to CSV
-        with open(OUTPUT_FILE, 'w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['tweet_count', 'Username', 'Text', 'Created_at', 'Retweets', 'Likes'])
-            writer.writerows(all_tweets)
-
-        print(f'{datetime.now()} - Done! Saved {tweet_count} tweets to {OUTPUT_FILE}.')
+        if all_tweets:
+            await save_tweets_to_csv(all_tweets, OUTPUT_FILE)
+        else:
+            print("No tweets were fetched.")
 
     except HTTPStatusError as e:
         if e.response.status_code == 429:
-            print(f'{datetime.now()} - Rate limit exceeded. Try again later.')
+            print("Rate limit exceeded. Try again later.")
         else:
-            print(f'{datetime.now()} - HTTP Error occurred: {e.response.status_code} - {e.response.text}')
+            print(f"HTTP Error occurred: {e.response.status_code} - {e.response.text}")
     except Exception as e:
-        print(f'{datetime.now()} - An error occurred: {e}')
-        import traceback
-        traceback.print_exc()
+        print(f"An unexpected error occurred: {e}")
 
-
-# Entry point
 if __name__ == "__main__":
     asyncio.run(main())
