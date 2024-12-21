@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseRedirect
 from django.urls import reverse
 
+
+
 # Base URL for the Thrones API
 API_BASE_URL = "https://thronesapi.com/api/v2/Characters"
 
@@ -37,7 +39,9 @@ def character_detail(request, character_id):
 
     return render(request, "posts/character_detail.html", {"character": character})
 
+def quotes(request):
+    return render(request, "posts/quotes.html",)
     
 def google(request,id):
-    url = reverse('house', args = [id])
+    url = reverse('character_detail', args = [id])
     return HttpResponseRedirect(url) 
