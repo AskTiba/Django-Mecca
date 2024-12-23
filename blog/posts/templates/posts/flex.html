@@ -1,0 +1,55 @@
+{% extends 'posts/base.html' %} {% block content %} {% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="flex items-center justify-between m-4">
+      <h1 class="text-center text-2xl text-[#00afb9] font-bold">Flex</h1>
+      <a href="{% url 'home' %}" class="text-blue-800 font-semibold"
+        >Back to home</a
+      >
+    </div>
+    <div class="flex border-2 border-dashed border-gray-500 m-4">
+      <div
+        id="flex-auto"
+        class="cursor-pointer flex-auto bg-[#ffafcc] p-3 hover:animate-pulse"
+      >
+        flex: auto (click to remove/add the `flex: initial` box)
+      </div>
+      <div id="default" class="bg-[#a2d2ff] p-3">flex: initial</div>
+    </div>
+    <div class="m-4" style="background-color: lightblue; padding: 10px">
+      <p class="bg-[#90be6d]">This is a block-level element.</p>
+      <p class="bg-[#ff9f1c]">
+        It takes up the full <em>width</em> by default.
+      </p>
+    </div>
+    <div class="m-4" style="padding: 20px; border: 2px solid black">
+      Parent element
+      <div>Child element</div>
+    </div>
+    <div class="m-4" style="padding: 20px; border: 2px solid black">
+      Parent element
+      <div style="padding: 10px; border: 2px solid red">Child element</div>
+    </div>
+    <div
+      class="w-[100px] h-[50px] p-[50px] border-2 border-dotted border-[#2ec4b6] m-4"
+    >
+      Content
+    </div>
+    <div
+      class="m-4 w-[100px] h-[50px] p-[50px] border-2 border-dotted border-[#2ec4b6] overflow-hidden"
+    >
+      Content
+    </div>
+    <div style="width: 100px; height: 100px; padding: 60px; border: 5px solid black; overflow: visible;">
+      Content that doesn't fit!
+    </div>
+    
+    <script src="{% static 'posts/posts.js' %}"></script>
+  </body>
+</html>
+{% endblock %}

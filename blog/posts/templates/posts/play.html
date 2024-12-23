@@ -1,0 +1,30 @@
+{% extends 'posts/base.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <a href="{% url 'home' %}" class="text-blue-800 font-semibold"
+      >Back to home</a
+    >
+    <div class="flex justify-center mt-10 space-x-5">
+      <div
+        class="bg-green-700 flex items-center h-32 w-32 justify-between group peer transition-colors duration-500 ease-in-out delay-500"
+      >
+        <div
+          class="w-10 h-10 bg-purple-800 m-3 group-hover:bg-red-600 transition-colors duration-500 ease-in-out delay-500 animate-spin"
+        ></div>
+        <div
+          class="w-10 h-10 bg-purple-800 m-3 group-hover:bg-blue-600 transition-colors duration-500 ease-in-out delay-500 animate-bounce"
+        ></div>
+      </div>
+      <div
+        class="bg-orange-600 h-32 w-32 peer-hover:bg-teal-800 transition-colors duration-500 ease-in-out delay-500"
+      ></div>
+    </div>
+  </body>
+</html>
+{% endblock %}

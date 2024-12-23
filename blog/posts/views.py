@@ -41,6 +41,15 @@ def character_detail(request, character_id):
 
 def quotes(request):
     return render(request, "posts/quotes.html",)
+
+def play(request):
+    return render(request, "posts/play.html",)
+    
+def flex(request):
+    return render(request, "posts/flex.html",)
+    
+def grid(request):
+    return render(request, "posts/grid.html",)
     
 def google(request,id):
     url = reverse('character_detail', args = [id])

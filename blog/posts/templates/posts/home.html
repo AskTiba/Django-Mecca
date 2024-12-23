@@ -8,16 +8,37 @@
   </head>
 
   <body>
-    <div class="flex w-full flex-row m-2 items-center justify-center">
+    <div class="flex space-x-5 w-full flex-row m-2 items-center justify-center">
       <div class="flex flex-col items-center justify-center">
         <h1 class="text-5xl text-green-700 font-medium">Game Of Thrones</h1>
         <p class="">When you play the Game of Thrones, you either win or die</p>
       </div>
-      <a href="{% url 'quotes' %}" class="flex self-start pr-5">
+      <a href="{% url 'quotes' %}" class="flex self-start">
         <h3
           class="text-white px-3 py-1 rounded-md hover:bg-green-600 font-semibold bg-green-700"
         >
           Quotes
+        </h3>
+      </a>
+      <a href="{% url 'play' %}" class="flex self-start">
+        <h3
+          class="text-white px-3 py-1 rounded-md hover:bg-green-600 font-semibold bg-green-700"
+        >
+          Play
+        </h3>
+      </a>
+      <a href="{% url 'flex' %}" class="flex self-start">
+        <h3
+          class="text-white px-3 py-1 rounded-md hover:bg-green-600 font-semibold bg-green-700"
+        >
+          Flex
+        </h3>
+      </a>
+      <a href="{% url 'grid' %}" class="flex self-start">
+        <h3
+          class="text-white px-3 py-1 rounded-md hover:bg-green-600 font-semibold bg-green-700"
+        >
+          Grid
         </h3>
       </a>
     </div>
