@@ -20,6 +20,7 @@ from  posts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('global/', views.global1),
     path("__reload__/", include("django_browser_reload.urls")),
     path('', include('posts.urls')),
     path('<int:id>/', views.google),

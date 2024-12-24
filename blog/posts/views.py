@@ -39,6 +39,9 @@ def character_detail(request, character_id):
 
     return render(request, "posts/character_detail.html", {"character": character})
 
+def global1(request):
+    return render(request, "global.html",)
+
 def quotes(request):
     return render(request, "posts/quotes.html",)
 

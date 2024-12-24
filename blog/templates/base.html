@@ -1,0 +1,36 @@
+{% extends 'posts/base.html' %} {% block content %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=h1, initial-scale=1.0" />
+    <title>{% block title %} {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    {% block css %} {% endblock css %}
+  </head>
+
+  <body class="bg-[#0d1b2a]">
+    <nav class="p-4 flex items-center justify-between border-b border-gray-600">
+      <a href="" # class="text-3xl font-semibold">Mecca</a>
+      <pre class="">Take it easy</pre>
+    </nav>
+    {% block 'body' %} {% endblock 'body' %}
+    <footer class="p-4 flex justify-between border-t border-gray-600">
+      <div class="">
+        <p class="">Mecca</p>
+        <p class="">
+          Copyright © 2024 650 Industries, Inc. All rights reserved.
+        </p>
+      </div>
+      <div
+        class="flex items-center px-5 py-2 rounded-md hover:bg-[#000814] space-x-3"
+      >
+        <div class="size-2 rounded-full bg-green-600"></div>
+        <button class="capitalize">All systems operational</button>
+      </div>
+    </footer>
+    <script src="{% static 'posts/posts.js' %}"></script>
+  </body>
+</html>
+{% endblock %}
